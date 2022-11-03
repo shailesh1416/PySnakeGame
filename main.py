@@ -6,15 +6,15 @@ import random
 
 # size of snzke
 SIZE = 40
-HEIGHT = 800
-WIDTH = 500
+WIDTH = 1000
+HEIGHT = 600
 BACKGROUND_COLOR = (158, 27, 245)
 # Ball
 class Apple:
     def __init__(self,parent_surface):
         self.parent_surface = parent_surface
-        self.x = random.randint(1, int(HEIGHT/SIZE)-1)* SIZE
-        self.y= random.randint(1, int(WIDTH/SIZE)-1)* SIZE
+        self.x = random.randint(1, int(WIDTH/SIZE)-1)* SIZE
+        self.y= random.randint(1, int(HEIGHT/SIZE)-1)* SIZE
         self.apple = pygame.image.load('resources/apple.jpg').convert()
 
     def draw(self):
@@ -22,13 +22,15 @@ class Apple:
         pygame.display.flip()
 
     def move(self):
-        self.x = random.randint(1, int(HEIGHT/SIZE)-1)* SIZE
-        self.y = random.randint(1, int(WIDTH/SIZE)-1)* SIZE
+        self.x = random.randint(1, int(WIDTH/SIZE)-1)* SIZE
+        self.y = random.randint(1, int(HEIGHT/SIZE)-1)* SIZE
         pygame.display.flip()
 
 
 # Snake 
 class Snake:
+
+    # Initializing snake 
     def __init__(self,parent_surface,length):
         self.length = length
         self.x = [SIZE]*self.length
@@ -38,13 +40,14 @@ class Snake:
         self.parent_surface = parent_surface
         self.block = pygame.image.load('resources/block.jpg').convert()
 
+    # increase snake length on collision with apple
     def increase_length(self):
         self.length+=1
         self.x.append(-1)
         self.y.append(-1)
 
 
-        
+    # Draw snake  
     def draw(self):
         # self.parent_surface.fill(BACKGROUND_COLOR)
         # self.render_background()
@@ -99,7 +102,7 @@ class Game:
         pygame.init()
         pygame.mixer.init()
         self.play_background_music()
-        self.surface = pygame.display.set_mode((HEIGHT,WIDTH))
+        self.surface = pygame.display.set_mode((WIDTH,HEIGHT))
         # self.surface.fill(BACKGROUND_COLOR)
         self.render_background()
         self.snake = Snake(self.surface,1)
@@ -118,8 +121,8 @@ class Game:
 
     def score(self):
         font = pygame.font.SysFont("arial", 20)
-        score = font.render(f"Score : {self.snake.length}", True, (255,255,255))
-        self.surface.blit(score, (HEIGHT-100,10))
+        score = font.render(f"Score : {self.snake.length-1}", True, (255,255,255))
+        self.surface.blit(score, (WIDTH-100,10))
     
     def render_background(self):
         bg = pygame.image.load('resources/background.jpg')
@@ -142,10 +145,10 @@ class Game:
         font = pygame.font.SysFont("arial", 40)
         
         line1 = font.render(f"Game Over, Your Score is : {self.snake.length}", True, (255,255,255))
-        self.surface.blit(line1, (int(HEIGHT/2)-300,int(WIDTH/2)))
+        self.surface.blit(line1, (int(WIDTH/2)-300,int(HEIGHT/2)))
 
         line2 = font.render(f"Press Enter to restart the game.", True, (200,150,50))
-        self.surface.blit(line2, (int(HEIGHT/2)-300,int(WIDTH/2)+40))
+        self.surface.blit(line2, (int(WIDTH/2)-300,int(HEIGHT/2)+40))
 
         pygame.display.flip()
         pygame.mixer.music.pause()
@@ -175,7 +178,10 @@ class Game:
             if self.is_collission(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
                 raise "Game over"
         
-   
+        # checking collision at boundaries
+        if (self.snake.x[0]<0 or self.snake.x[0]>WIDTH or self.snake.y[0]<0 or self.snake.y[0]>HEIGHT ):
+             raise "Game over"
+
     def run(self):
         running = True
         pause = False
