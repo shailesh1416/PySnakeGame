@@ -178,7 +178,9 @@ class Game:
             if self.is_collission(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
                 raise "Game over"
         
-        
+        # checking collision at boundaries
+        if (self.snake.x[0]<0 or self.snake.x[0]>WIDTH or self.snake.y[0]<0 or self.snake.y[0]>HEIGHT ):
+             raise "Game over"
 
     def run(self):
         running = True
